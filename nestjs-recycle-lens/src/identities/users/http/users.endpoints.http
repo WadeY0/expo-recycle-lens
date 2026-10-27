@@ -1,0 +1,24 @@
+# @name = Users API tests
+
+POST http://localhost:5005/users
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InF1YW5nYW5oY2Y0QGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ4OTM4MjU4LCJleHAiOjE3NDg5NDE4NTgsImF1ZCI6Im5lc3Rqcy1sbXMtYXBwIiwiaXNzIjoibmVzdGpzLmNvbXBhbnkuY29tIn0.s0AgXw3nh5HO9kQQes3y-dBfrnQiquh7CUwfOUZnKhk
+{
+  "email": "quanganh123@gmail.com",
+  "password": "password",
+  "fullName": "quanganh"
+}
+
+###
+GET http://localhost:5005/users/9
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InF1YW5nYW5oY2Y0QGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ4OTM4MjU4LCJleHAiOjE3NDg5NDE4NTgsImF1ZCI6Im5lc3Rqcy1sbXMtYXBwIiwiaXNzIjoibmVzdGpzLmNvbXBhbnkuY29tIn0.s0AgXw3nh5HO9kQQes3y-dBfrnQiquh7CUwfOUZnKhk
+
+###
+PATCH http://localhost:5005/users
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InF1YW5nYW5oY2Y0QGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ4OTM4MjU4LCJleHAiOjE3NDg5NDE4NTgsImF1ZCI6Im5lc3Rqcy1sbXMtYXBwIiwiaXNzIjoibmVzdGpzLmNvbXBhbnkuY29tIn0.s0AgXw3nh5HO9kQQes3y-dBfrnQiquh7CUwfOUZnKhk
+
+{
+  "fullName": "Nguyễn Văn A"
+}

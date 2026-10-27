@@ -1,0 +1,123 @@
+
+# ==========================================
+# 1. DEPENDENCIES
+# ==========================================
+node_modules/
+.pnp.*
+.yarn/cache/
+.yarn/unplugged/
+
+# ==========================================
+# 2. ENVIRONMENT VARIABLES & SECRETS
+# ==========================================
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+*.pem
+*.key
+*.p12
+*.p8
+*.mobileprovision
+*.keystore
+*.jks
+google-services.json
+GoogleService-Info.plist
+
+# ==========================================
+# 3. EXPO / REACT NATIVE
+# ==========================================
+.expo/
+.expo-shared/
+web-build/
+.expo-internal/
+
+# Native build outputs
+android/.gradle/
+android/build/
+android/app/build/
+ios/Pods/
+ios/build/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+
+# EAS local credentials
+credentials.json
+
+# ==========================================
+# 4. NESTJS / TYPESCRIPT
+# ==========================================
+dist/
+build/
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ==========================================
+# 5. TESTING / COVERAGE
+# ==========================================
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+*.lcov
+
+# ==========================================
+# 6. CACHE / TEMP
+# ==========================================
+.cache/
+.tmp/
+temp/
+tmp/
+.eslintcache
+.turbo/
+.parcel-cache/
+
+# ==========================================
+# 7. DATABASE / PRISMA
+# ==========================================
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Keep Prisma schema and migrations tracked
+# prisma/schema.prisma
+# prisma/migrations/
+
+# ==========================================
+# 8. IDE / EDITOR
+# ==========================================
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+*.swp
+*.swo
+*~
+
+# ==========================================
+# 9. OS GENERATED FILES
+# ==========================================
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ==========================================
+# 10. LOCAL UPLOADS / GENERATED FILES
+# ==========================================
+uploads/
+storage/
+*.tmp
+*.temp

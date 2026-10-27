@@ -1,0 +1,291 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ContentStatus {
+  active
+  inactive
+}
+
+enum ArticleType {
+  post
+  library
+  ai_scan
+}
+
+enum CategoryType {
+  post
+  library
+}
+
+enum ConversationType {
+  vision
+  chat
+}
+
+enum OtpPurpose {
+  email_verification
+  password_reset
+}
+
+model User {
+  tokenVersion Int @default(0)
+  id         String   @id @default(uuid()) @db.Uuid
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  email      String   @unique
+  fullName   String
+  password   String
+  avatar     String?
+  isVerified Boolean  @default(false)
+  role       String   @default("user")
+  age        Int?
+
+  gamification UserGamificationProfile?
+  xpTransactions XPTransaction[]
+  wasteDiscoveries WasteDiscovery[]
+  achievements UserAchievement[]
+  challengeProgress UserChallengeProgress[]
+
+  otps         OTP[]
+  articleLikes ArticleLike[]
+  articles     Article[]
+  conversations Conversation[]
+
+  @@map("users")
+}
+
+model OTP {
+  purpose OtpPurpose?
+  attempts Int @default(0)
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  code   String
+  isUsed Boolean @default(false)
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@index([userId, purpose, createdAt])
+  @@map("otps")
+}
+
+model Category {
+  id          String        @id @default(uuid()) @db.Uuid
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
+  title       String
+  description String?
+  status      ContentStatus @default(active)
+  type        CategoryType  @default(post)
+
+  articles Article[]
+
+  @@map("categories")
+}
+
+model Article {
+  id          String        @id @default(uuid()) @db.Uuid
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
+  title       String
+  description String?
+  content     String
+  image       String?
+  status      ContentStatus @default(active)
+  type        ArticleType   @default(post)
+
+  categoryId String?   @db.Uuid
+  category   Category? @relation(fields: [categoryId], references: [id])
+
+  createdById String? @db.Uuid
+  createdBy   User?   @relation(fields: [createdById], references: [id])
+
+  wasteItem WasteItem?
+  scanAnalysis ScanAnalysis?
+
+  likes ArticleLike[]
+
+  @@index([createdById, type, createdAt])
+  @@map("articles")
+}
+
+model ArticleLike {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+
+  articleId String  @db.Uuid
+  article   Article @relation(fields: [articleId], references: [id])
+
+  @@unique([userId, articleId])
+  @@map("article_likes")
+}
+
+model Conversation {
+  id             String           @id @default(uuid()) @db.Uuid
+  title          String           @default("Cuộc trò chuyện")
+  conversationId String           @unique
+  type           ConversationType
+
+  userId String @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, type])
+  @@map("conversations")
+}
+
+
+// Canonical taxonomy extends, rather than replaces, existing library Articles.
+model WasteItem {
+  slug String @id
+  articleId String @unique @db.Uuid
+  article Article @relation(fields: [articleId], references: [id], onDelete: Restrict)
+  nameEn String
+  aliases String[]
+  materials String[]
+  searchText String
+  // Versioned, curated guidance + provenance; never supplied by an AI result.
+  guidance Json
+  version String
+  scans ScanAnalysis[]
+  discoveries WasteDiscovery[]
+  @@index([materials], type: Gin)
+  @@map("waste_items")
+}
+
+model ScanAnalysis {
+  requestKey String?
+  requestUserId String? @db.Uuid
+  articleId String @id @db.Uuid
+  article Article @relation(fields: [articleId], references: [id], onDelete: Restrict)
+  wasteSlug String?
+  wasteItem WasteItem? @relation(fields: [wasteSlug], references: [slug], onDelete: SetNull)
+  result Json
+  provider String?
+  model String?
+  createdAt DateTime @default(now())
+  @@unique([requestUserId, requestKey])
+  @@map("scan_analyses")
+}
+
+// Tenant scope is the server-resolved physical database, as for all existing models.
+model GamificationSettings {
+  key String @id
+  activatedAt DateTime @default(now())
+  @@map("gamification_settings")
+}
+
+model UserGamificationProfile {
+  userId String @id @db.Uuid
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  totalXp Int @default(0)
+  eligibleScans Int @default(0)
+  updatedAt DateTime @updatedAt
+  @@map("user_gamification_profiles")
+}
+
+model XPTransaction {
+  id String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  eventKey String
+  kind String
+  amount Int
+  reason String
+  scanId String? @db.Uuid
+  occurredAt DateTime @default(now())
+  localDay String
+  @@unique([userId, eventKey])
+  @@index([userId, kind, localDay])
+  @@index([userId, occurredAt, id])
+  @@map("xp_transactions")
+}
+
+model WasteDiscovery {
+  userId String @db.Uuid
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  wasteSlug String
+  wasteItem WasteItem @relation(fields: [wasteSlug], references: [slug], onDelete: Restrict)
+  firstScanId String? @db.Uuid
+  discoveredAt DateTime @default(now())
+  historical Boolean @default(false)
+  @@id([userId, wasteSlug])
+  @@index([userId, discoveredAt])
+  @@map("waste_discoveries")
+}
+
+model AchievementDefinition {
+  key String @id
+  title String
+  description String
+  metric String
+  target Int
+  sortOrder Int
+  users UserAchievement[]
+  @@map("achievement_definitions")
+}
+
+model UserAchievement {
+  userId String @db.Uuid
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  achievementKey String
+  achievement AchievementDefinition @relation(fields: [achievementKey], references: [key], onDelete: Restrict)
+  unlockedAt DateTime @default(now())
+  @@id([userId, achievementKey])
+  @@map("user_achievements")
+}
+
+model ChallengeDefinition {
+  key String @id
+  title String
+  period String
+  metric String
+  target Int
+  rewardXp Int
+  sortOrder Int
+  users UserChallengeProgress[]
+  @@map("challenge_definitions")
+}
+
+model UserChallengeProgress {
+  userId String @db.Uuid
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  challengeKey String
+  challenge ChallengeDefinition @relation(fields: [challengeKey], references: [key], onDelete: Restrict)
+  periodKey String
+  progress Int @default(0)
+  completedAt DateTime?
+  rewardedAt DateTime?
+  @@id([userId, challengeKey, periodKey])
+  @@index([userId, periodKey])
+  @@map("user_challenge_progress")
+}
+
+// Internal seed ownership registry. No API exposes or writes these records.
+// Target and marker are created atomically; existing unmarked records are never adopted.
+model SeedRecord {
+  key String @id
+  entity String
+  recordId String @db.Uuid
+  version String
+  createdAt DateTime @default(now())
+  @@unique([entity, recordId])
+  @@map("seed_records")
+}

@@ -1,0 +1,62 @@
+POST http://localhost:5005/auth/sign-in
+Content-Type: application/json
+
+{
+  "email": "quanganhcf4@gmail.com",
+  "password": "password1"
+}
+
+### Sign up
+POST http://localhost:5005/auth/sign-up
+Content-Type: application/json
+
+{
+  "email": "quanganhcf4@gmail.com",
+  "password": "password",
+  "fullName":"quang anh"
+}
+
+### Verify email
+POST http://localhost:5005/auth/verify-email
+Content-Type: application/json
+
+{
+  "userId": 10,
+  "otpCode": "421042"
+}
+
+### Resend OTP
+POST http://localhost:5005/auth/resend-otp
+Content-Type: application/json
+
+{
+  "email": "quanganhcf2@gmail.com"
+}
+
+
+### Forgot password - gửi OTP
+POST http://localhost:5005/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "quanganhcf4@gmail.com"
+}
+
+### Reset password
+POST http://localhost:5005/auth/reset-password
+Content-Type: application/json
+
+{
+  "userId": 10,
+  "otpCode": "105873",
+  "password": "password1",
+  "confirmPassword": "password1"
+}
+
+### Refresh token
+POST http://localhost:5005/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwLCJlbWFpbCI6InF1YW5nYW5oY2Y0QGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ3NzUxMjg3LCJleHAiOjE3NDc4Mzc2ODcsImF1ZCI6Im5lc3Rqcy1sbXMtYXBwIiwiaXNzIjoibmVzdGpzLmNvbXBhbnkuY29tIn0.2s76osON31wnDYnQzDPuA_YMLoYgzZLQ5xLCd5F05Jc"
+}

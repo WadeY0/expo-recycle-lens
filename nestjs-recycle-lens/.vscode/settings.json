@@ -1,0 +1,7 @@
+{
+  "files.encoding": "utf8",
+  "files.autoGuessEncoding": false,
+  "[sql]": {
+    "files.encoding": "utf8"
+  }
+}

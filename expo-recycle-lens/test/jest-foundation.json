@@ -1,0 +1,12 @@
+{
+  "rootDir": "..",
+  "testEnvironment": "node",
+  "testMatch": ["<rootDir>/test/*.test.cjs"],
+  "moduleNameMapper": { "^@/(.*)$": "<rootDir>/src/$1" },
+  "transform": {
+    "^.+\\.(t|j)sx?$": [
+      "<rootDir>/../nestjs-recycle-lens/node_modules/ts-jest",
+      { "tsconfig": "<rootDir>/test/tsconfig.json" }
+    ]
+  }
+}
